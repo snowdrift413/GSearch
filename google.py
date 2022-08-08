@@ -3,13 +3,21 @@ from requests import get
 from lxml.html import fromstring
 from socket import gethostbyname
 from time import sleep
+from random import choice 
 
 query = str(input("Search for : "))
 sg_search , ag_search = False , False
 max_results = 250
 
+# add more User-Agents here 
+uas = [
+  "Mozilla/5.0 (Windows NT 10.0; rv:91.0) Gecko/20100101 Firefox/91.0",
+  "Mozilla/5.0 (Windows NT 10.0; rv:78.0) Gecko/20100101 Firefox/78.0",
+  "Mozilla/5.0 (X11; Linux x86_64; rv:95.0) Gecko/20100101 Firefox/95.0",
+  "Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101 Firefox/91.0"
+]
 headers = {
-        'User-Agent': 'Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101 Firefox/91.0',
+        'User-Agent': choice(uas),
         'Host':'www.google.com',
         'Accept':'text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8',
         'Accept-Encoding':'gzip, deflate, br'
@@ -39,7 +47,7 @@ if ag_search :
     safe = 'active' if safe == 'y' else 'incative'
     #OmittedSearch
     omitted = str(input("[?] enable OmittedSearch ? (y/n) : ")).strip().lower()
-    filter = '1' if omitted == 'y' else '0'
+    filter_ = '1' if omitted == 'y' else '0'
     #PersonalizedSearch
     personalized = str(input("[?] enable PersonalizedSearch ? (y/n) : ")).strip().lower()
     pws = '1' if personalized == 'y' else '0'
@@ -47,17 +55,17 @@ if ag_search :
     country = str(input("[?] Search in specific Country ? (y/n) : ") or "n").strip().lower()
     cr = "country"+str(input("[?] Country code [alpha_2] : ")).strip().upper() if country == 'y' else ''
 
-    url = "https://www.google.com/search?q="+query+"&num="+num+"&start="+start+"&safe="+safe\
-+"&filter="+filter+"&pws="+pws+"&cr="+cr+"&adtest=off"
+    url = "https://www.google.com/search?q="+query+"&num="+str(num)+"&start="+str(start)+"&safe="+safe\
++"&filter="+filter_+"&pws="+pws+"&cr="+cr+"&adtest=off"
 
 #####################################################################################################################
-print(url);input()
+
 #while start < max_results :
-if start!=0:sleep(1.5)
+if offset!=start:sleep(1.5)
 request = get(url,headers=headers)
 if "?continue" in request.url: print("error");exit()
 tree = fromstring(request.text)
-#start += num
+#offset += num
 
 ############################################# Google Extractors #####################################################
 
@@ -88,7 +96,7 @@ extracters = {1:get_urls,2:get_domains,3:get_ips,4:get_titles,5:get_desc}
 print("""
     - [1] urls         [4] titles
     - [2] domains      [5] descriptions
-    - [3] IPs          [6] .
+    - [3] IPs          
     """)
 
 choice = int(input("choose : "))
