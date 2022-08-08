@@ -1,4 +1,3 @@
-
 from requests import get
 from lxml.html import fromstring
 from socket import gethostbyname
@@ -8,6 +7,7 @@ from random import choice
 sg_search , ag_search = False , False
 
 max_results = 250 # >num
+delay = 1.5 #to avoid google temp block 
 
 with open('user_agents.txt','r') as uas:
     rua = choice(uas.read().splitlines()) 
@@ -45,7 +45,7 @@ if sg_search:
 
 if ag_search :
     num = int(input("\n[?] results per page (max=100): ") or 100)
-    start = offset = int(input("[?] scrape from (offset) : ") or 0)
+    start = int(input("[?] scrape from (offset) : ") or 0)
 
     #SafeSearch
     safe = str(input("[?] enable SafeSearch ? (y/n) : ")).strip().lower()
@@ -100,13 +100,13 @@ if choice not in extractors : exit()
 
 while start < max_results :
     #print("[¬] page :",page)
-    if start!=0:sleep(1.5)
+    sleep(delay)
     if sg_search:
         request = get("https://www.google.com/search?q="+query+"&num="+str(num)+"&start="+str(start)
 ,headers=headers)
     if ag_search :
         request = get("https://www.google.com/search?q="+query+"&num="+str(num)+"&start="+str(start)+"&safe="+safe\
-+"&filter="+filter+"&pws="+pws+"&cr="+cr+"&adtest=off",headers=headers)
++"&filter="+filter_+"&pws="+pws+"&cr="+cr+"&adtest=off",headers=headers)
     if "?continue" in request.url: print("error");exit()
     tree = fromstring(request.text)
     output = extractors[choice]()
