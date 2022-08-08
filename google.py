@@ -5,9 +5,9 @@ from socket import gethostbyname
 from time import sleep
 from random import choice 
 
-query = str(input("Search for : "))
 sg_search , ag_search = False , False
-max_results = 250
+
+max_results = 250 # >num
 
 # add more User-Agents here 
 uas = [
@@ -23,11 +23,14 @@ headers = {
         'Accept-Encoding':'gzip, deflate, br'
 }
 ####################################################################################################################
+query = str(input("Search for : "))
 print("""
         [s] Simple search
         [a] Advanced search
         """)
+
 s_type = str(input("search type : ")).strip().lower()
+
 if s_type == 'a':
     ag_search = True
 else:
@@ -36,7 +39,6 @@ else:
 
 if sg_search:
     num,start = 100,0
-    url = "https://www.google.com/search?q="+query+"&num="+str(num)+"&start="+str(start)
 
 if ag_search :
     num = int(input("\n[?] results per page (max=100): ") or 100)
@@ -55,17 +57,7 @@ if ag_search :
     country = str(input("[?] Search in specific Country ? (y/n) : ") or "n").strip().lower()
     cr = "country"+str(input("[?] Country code [alpha_2] : ")).strip().upper() if country == 'y' else ''
 
-    url = "https://www.google.com/search?q="+query+"&num="+str(num)+"&start="+str(start)+"&safe="+safe\
-+"&filter="+filter_+"&pws="+pws+"&cr="+cr+"&adtest=off"
-
 #####################################################################################################################
-
-#while start < max_results :
-if offset!=start:sleep(1.5)
-request = get(url,headers=headers)
-if "?continue" in request.url: print("error");exit()
-tree = fromstring(request.text)
-#offset += num
 
 ############################################# Google Extractors #####################################################
 
@@ -91,7 +83,7 @@ def get_desc():
 
 #####################################################################################################################
 
-extracters = {1:get_urls,2:get_domains,3:get_ips,4:get_titles,5:get_desc}
+extractors = {1:get_urls,2:get_domains,3:get_ips,4:get_titles,5:get_desc}
 
 print("""
     - [1] urls         [4] titles
@@ -101,11 +93,22 @@ print("""
 
 choice = int(input("choose : "))
 
-if choice not in extracters : exit()
+if choice not in extractors : exit()
 
-output = extracters[choice]()
-print("\n".join(output))
-print("\n|Total : ",len(output))
+while start < max_results :
+    #print("[¬] page :",page)
+    if start!=0:sleep(1.5)
+    if sg_search:
+        request = get("https://www.google.com/search?q="+query+"&num="+str(num)+"&start="+str(start)
+,headers=headers)
+    if ag_search :
+        request = get("https://www.google.com/search?q="+query+"&num="+str(num)+"&start="+str(start)+"&safe="+safe\
++"&filter="+filter+"&pws="+pws+"&cr="+cr+"&adtest=off",headers=headers)
+    if "?continue" in request.url: print("error");exit()
+    tree = fromstring(request.text)
+    output = extractors[choice]()
+    print('\n'.join(output))
+    start += num
 
 #footer
 print("\n\t*** This is just a BETA version . ***")
