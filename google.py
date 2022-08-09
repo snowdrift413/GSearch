@@ -9,9 +9,11 @@ sg_search , ag_search = False , False
 max_results = 250 # >num
 delay = 1.5 #to avoid google temp block 
 
-with open('user_agents.txt','r') as uas:
-    rua = choice(uas.read().splitlines()) 
-
+try :
+    with open('user_agents.txt','r') as uas:
+        rua = choice(uas.read().strip().splitlines()) 
+except Exception as err:
+    print(err)
 # add more User-Agents here 
 # uas = [
 #   "Mozilla/5.0 (Windows NT 10.0; rv:91.0) Gecko/20100101 Firefox/91.0",
@@ -19,6 +21,7 @@ with open('user_agents.txt','r') as uas:
 #   "Mozilla/5.0 (X11; Linux x86_64; rv:95.0) Gecko/20100101 Firefox/95.0",
 #   "Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101 Firefox/91.0"
 # ]
+
 headers = {
         'User-Agent': rua,
         'Host':'www.google.com',
@@ -86,7 +89,7 @@ def get_desc():
 
 #####################################################################################################################
 
-extractors = {1:get_urls,2:get_domains,3:get_ips,4:get_titles,5:get_desc}
+extractors = {1:['URLs',get_urls],2:['Domains',get_domains],3:['IPs',get_ips],4:['Titles',get_titles],5:['Description',get_desc]}
 
 print("""
     - [1] urls         [4] titles
@@ -97,9 +100,10 @@ print("""
 choice = int(input("choose : "))
 
 if choice not in extractors : exit()
-
+page , results = 0 , ''
+print('Loading {}...'.format(extractors[choice][0]))
 while start < max_results :
-    #print("[¬] page :",page)
+    print("[¬] Fetching page :",page+1)
     sleep(delay)
     if sg_search:
         request = get("https://www.google.com/search?q="+query+"&num="+str(num)+"&start="+str(start)
@@ -107,12 +111,22 @@ while start < max_results :
     if ag_search :
         request = get("https://www.google.com/search?q="+query+"&num="+str(num)+"&start="+str(start)+"&safe="+safe\
 +"&filter="+filter_+"&pws="+pws+"&cr="+cr+"&adtest=off",headers=headers)
-    if "?continue" in request.url: print("error");exit()
+    if "?continue" in request.url: 
+        print("[X] Google Temporary Block :(")
+        print("[!] Try again later.")
+        exit()
     tree = fromstring(request.text)
-    output = extractors[choice]()
-    print('\n'.join(output))
+    output = extractors[choice][1]()
+    results += '\n'.join(output)
     start += num
 
+print(results)
+
+if str(input('\n[>] save output ? (y/n) : 'or 'n')).strip().lower() =='y':
+   save_file = 'Results-{}({}).txt'.format(query.strip(),extractors[choice][0])
+   with open(save_file,'w') as out:
+        out.write(results)
+    print('[+] Saved to "{}"'.format(save_file))
 #footer
 print("\n\t*** This is just a BETA version . ***")
 print("\t\tAuthor : m3d_y4ss3r ^-^")
