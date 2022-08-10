@@ -2,7 +2,7 @@ from requests import get
 from lxml.html import fromstring
 from socket import gethostbyname
 from time import sleep
-from random import choice 
+from random import choice
 from signal import signal, SIGINT
 
 ######## Signal Handling #######
@@ -14,19 +14,18 @@ signal(SIGINT, handler)
 sg_search , ag_search = False , False
 
 max_results = 250 # >num
-delay = 1.5 #to avoid google temp block 
+delay = 1.5 #to avoid google temp block
 
 try :
     with open('user_agents.txt','r') as uas:
-        rua = choice(uas.read().strip().splitlines()) 
+        rua = choice(uas.read().strip().splitlines())
 except IndexError:
     print('[!] "user_agents.txt" file, is empty .')
     exit( '[~] Add some user-agents to the file \n\t(seperated by a line feed).')
-except FileNotFoundError: 
+except FileNotFoundError:
     print('[!!] "user_agents.txt" file , isn\'t in this directory') 
     exit('[~] Create a new one 0R run the script from master folder')
-    
-engine = 'https://www.google.com/search?q='  
+
 headers = {
         'User-Agent': rua,
         'Host':'www.google.com',
@@ -128,8 +127,8 @@ while start < max_results :
     html += request.text
     start += num
     page +=1
-    
- 
+
+
 tree = fromstring(html)
 results = '\n'.join(extractors[choice][1]())
 
