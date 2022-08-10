@@ -59,13 +59,16 @@ if ag_search :
     safe = 'active' if safe == 'y' else 'incative'
     #OmittedSearch
     omitted = str(input('[?] enable OmittedSearch ? (y/n) : ')).strip().lower()
-    filter_ = '1' if omitted == 'y' else '0'
+    filter = '1' if omitted == 'y' else '0'
     #PersonalizedSearch
     personalized = str(input('[?] enable PersonalizedSearch ? (y/n) : ')).strip().lower()
     pws = '1' if personalized == 'y' else '0'
     #Country based search
     country = str(input('[?] Search in specific Country ? (y/n) : ') or 'n').strip().lower()
     cr = 'country'+str(input('[?] Country code [alpha_2] : ')).strip().upper() if country == 'y' else ''
+    #Internationalization
+    ie = str(input("[?] Input  Char Encoding (Default = UTF8) : ") or 'utf8').strip().lower()
+    oe = str(input("[?] Output Char Encoding (Default = UTF8) : ") or 'utf8').strip().lower()
 
 #####################################################################################################################
 
@@ -108,23 +111,29 @@ if choice not in extractors :
 
 print('[+] Loading {}...'.format(extractors[choice][0]))
 
-page , results = 0 , ''
+page , results = 1 , ''
 while start < max_results :
-    print('[¬] Fetching page : ',page+1)
+    print('[:] Waiting {} seconds'.format(delay))
     sleep(delay)
+    print('[¬] Fetching page : ',page)
     if sg_search:
-        request = get(engine+query+'&num='+str(num)+'&start='+str(start),headers=headers)
+        url = 'https://www.google.com/search?q='+query+'&num='+str(num)+'&start='+str(start)
     if ag_search :
-        request = get(engine+query+'&num='+str(num)+'&start='+str(start)+'&safe='+safe
-                      +'&filter='+filter_+'&pws='+pws+'&cr='+cr+'&adtest=off',headers=headers)
+        url = 'https://www.google.com/search?q='+query+'&num='+str(num)+'&start='+str(start)+'&safe='+safe+'&filter='+filter+'&pws='+pws+'&cr='+cr+'&lr='+lr+'&io='+io+'&oe='+oe+'&adtest=off'
+    print('[¬] url : ',url)
+    request = get(url,headers=headers)
     if '?continue' in request.url: 
         print('[X] Google Temporary Block :(')
         exit('[!] Try again later.')
-    tree = fromstring(request.text)
-    results += '\n'.join(extractors[choice][1]())
+    html += request.text
     start += num
+    page +=1
+    
+ 
+tree = fromstring(html)
+results = '\n'.join(extractors[choice][1]())
 
-print(results)
+print(results,'\n|Total :',len(results))
 
 if str(input('\n[>] save output ? (y/n) : 'or 'n')).strip().lower() =='y':
    save_file = 'Results-{}({}).txt'.format(query.strip(),extractors[choice][0])
