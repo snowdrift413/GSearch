@@ -74,7 +74,7 @@ if ag_search :
 ############################################# Google Extractors #####################################################
 
 def get_urls():
-    urls = tree.xpath('//div[contains(@class,"g")]/div/div/div/a/@href')
+    urls = tree.xpath('//div[contains(@class,"g")]/div/div/div/a/@href[starts-with(.,"http")]')
     return urls
 
 def get_domains():
