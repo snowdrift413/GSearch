@@ -138,7 +138,7 @@ if str(input('\n[>] save output ? (y/n) : 'or 'n')).strip().lower() =='y':
    save_file = 'Results-{}({}).txt'.format(query.strip(),extractors[choice][0])
    with open(save_file,'w') as out:
         out.write(results)
-    print('[+] Saved to "{}"'.format(save_file))
+   print('[+] Saved to "{}"'.format(save_file))
 #footer
 print('\n\t*** This is just a BETA version . ***')
 print('\t\tAuthor : m3d_y4ss3r ^-^')
