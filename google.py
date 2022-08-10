@@ -12,7 +12,6 @@ signal(SIGINT, handler)
 #################################
 
 sg_search , ag_search = False , False
-
 max_results = 250 # >num
 delay = 1.5 #to avoid google temp block
 
@@ -110,17 +109,17 @@ while start < max_results :
     sleep(delay)
     print('[¬] Fetching page : ',page)
     if sg_search:
-        url = 'https://www.google.com/search?q='+query+'&num='+str(num)+'&start='+str(start)
+        g_url = 'https://www.google.com/search?q='+query+'&num='+str(num)+'&start='+str(start)
     if ag_search :
-        url = 'https://www.google.com/search?q='+query+'&num='+str(num)+'&start='+str(start)+'&safe='+safe+'&filter='+filter+'&pws='+pws+'&cr='+cr+'&lr='+lr+'&io='+io+'&oe='+oe+'&adtest=off'
-    print('[¬] url : ',url)
+        g_url = 'https://www.google.com/search?q='+query+'&num='+str(num)+'&start='+str(start)+'&safe='+safe+'&filter='+filter+'&pws='+pws+'&cr='+cr+'&lr='+lr+'&io='+io+'&oe='+oe+'&adtest=off'
+    print('[¬] url : ',g_url)
     headers = {
         'User-Agent': choice(rua),
         'Host':'www.google.com',
         'Accept':'text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8',
         'Accept-Encoding':'gzip, deflate, br'
     }
-    request = get(url,headers=headers)
+    request = get(g_url,headers=headers)
     if '?continue' in request.url: 
         print('[X] Google Temporary Block :(')
         exit('[!] Try again later.')
@@ -132,7 +131,7 @@ while start < max_results :
 tree = fromstring(html)
 results = '\n'.join(extractors[option][1]())
 
-print(results,'\n|Total :',len(results))
+print(results,'\n\n|Total :',len(results))
 
 if str(input('\n[>] save output ? (y/n) : 'or 'n')).strip().lower() =='y':
    save_file = 'Results-{}({}).txt'.format(query.strip(),extractors[option][0])
@@ -140,5 +139,5 @@ if str(input('\n[>] save output ? (y/n) : 'or 'n')).strip().lower() =='y':
         out.write(results)
    print('[+] Saved to "{}"'.format(save_file))
 #footer
-print('\n\t*** This is just a BETA version . ***')
-print('\t\tAuthor : m3d_y4ss3r ^-^')
+print('\n\t\t*** This is just a BETA version . ***')
+exit('\t\t\tAuthor : m3d_y4ss3r ^-^\n')
