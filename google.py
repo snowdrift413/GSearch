@@ -18,7 +18,7 @@ delay = 1.5 #to avoid google temp block
 
 try :
     with open('user_agents.txt','r') as uas:
-        rua = choice(uas.read().strip().splitlines())
+        rua = uas.read().strip().splitlines()
 except IndexError:
     print('[!] "user_agents.txt" file, is empty .')
     exit( '[~] Add some user-agents to the file \n\t(seperated by a line feed).')
@@ -26,12 +26,6 @@ except FileNotFoundError:
     print('[!!] "user_agents.txt" file , isn\'t in this directory') 
     exit('[~] Create a new one 0R run the script from master folder')
 
-headers = {
-        'User-Agent': rua,
-        'Host':'www.google.com',
-        'Accept':'text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8',
-        'Accept-Encoding':'gzip, deflate, br'
-}
 ####################################################################################################################
 query = str(input('Search for : '))
 print('''
@@ -103,12 +97,12 @@ print('''
     - [3] IPs          
     ''')
 
-choice = int(input('choose : '))
+option = int(input('choose : '))
 
-if choice not in extractors : 
-    exit('[!] For now , available choices are :','/'.join(str(key) for key in extractors))
+if option not in extractors : 
+    exit('[!] For now , available options are :','/'.join(str(key) for key in extractors))
 
-print('[+] Loading {}...'.format(extractors[choice][0]))
+print('[+] Loading {}...'.format(extractors[option][0]))
 
 page , html = 1 , ''
 while start < max_results :
@@ -120,6 +114,12 @@ while start < max_results :
     if ag_search :
         url = 'https://www.google.com/search?q='+query+'&num='+str(num)+'&start='+str(start)+'&safe='+safe+'&filter='+filter+'&pws='+pws+'&cr='+cr+'&lr='+lr+'&io='+io+'&oe='+oe+'&adtest=off'
     print('[¬] url : ',url)
+    headers = {
+        'User-Agent': choice(rua),
+        'Host':'www.google.com',
+        'Accept':'text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8',
+        'Accept-Encoding':'gzip, deflate, br'
+    }
     request = get(url,headers=headers)
     if '?continue' in request.url: 
         print('[X] Google Temporary Block :(')
@@ -130,12 +130,12 @@ while start < max_results :
 
 
 tree = fromstring(html)
-results = '\n'.join(extractors[choice][1]())
+results = '\n'.join(extractors[option][1]())
 
 print(results,'\n|Total :',len(results))
 
 if str(input('\n[>] save output ? (y/n) : 'or 'n')).strip().lower() =='y':
-   save_file = 'Results-{}({}).txt'.format(query.strip(),extractors[choice][0])
+   save_file = 'Results-{}({}).txt'.format(query.strip(),extractors[option][0])
    with open(save_file,'w') as out:
         out.write(results)
    print('[+] Saved to "{}"'.format(save_file))
