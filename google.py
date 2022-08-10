@@ -110,7 +110,7 @@ if choice not in extractors :
 
 print('[+] Loading {}...'.format(extractors[choice][0]))
 
-page , results = 1 , ''
+page , html = 1 , ''
 while start < max_results :
     print('[:] Waiting {} seconds'.format(delay))
     sleep(delay)
