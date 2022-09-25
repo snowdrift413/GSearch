@@ -36,7 +36,8 @@ AdTest (default : <kbd>off</kbd> ) = terminates connection to AdWords database
 #### TODO 
 - [X] ~Bypass Rate Limiting (delayed requests)~
 - [X] ~User-Agent Randomization~
+- [X] ~Auto/Custom Save~
 - [ ] Add **all** Parameters to Advanced Mode
-- [ ] Query URI Encoding
+- [X] ~Query URI Encoding~
 - [ ] Proxy (HTTP[S]/Socks4,5) / Tor 
 - [ ] Rebuild with Args
