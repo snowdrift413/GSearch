@@ -24,6 +24,8 @@ OmittedSearch = Hide/Show entries very similar to the results already displayed
 Personalisedsearch = Hides/Show personal results
   
 Country = search by country (ISO 3166-1 alpha-2 code)
+
+Internationalization = I/O Encoding 
    
 AdTest (default : <kbd>off</kbd> ) = terminates connection to AdWords database
    
