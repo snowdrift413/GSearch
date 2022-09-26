@@ -172,7 +172,7 @@ extractors = {
     5: ['Description', get_desc]
 }
 
-print(Fore['cyan'] + '''
+print(Fore['yellow'] + '''
     - [1] urls         - [4] titles
     - [2] domains      - [5] descriptions
     - [3] IPs
