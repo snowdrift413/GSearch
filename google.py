@@ -21,25 +21,10 @@ if __import__("sys").stdout.isatty():
     Clear, Reset, Underline = "\033[K", "\033[0m", "\033[4m" 
 
 else:
-
-    Fore = {
-        "red": "Esc[31m",
-        "green": "Esc[32m",
-        "yellow": "Esc[33m",
-        "magenta": "Esc[35m",
-        "cyan": "Esc[36m",
-        "white": "Esc[37m"
-    }
-
-    Back = {
-        "red": "Esc[41m",
-        "green": "Esc[42m",
-        "yellow": "Esc[43m",
-        "magenta": "Esc[45m",
-        "cyan": "Esc[46m"
-    }
-
+    for h, i in zip(Fore,Back):
+        Fore[h], Back[i] = 'Esc[' + Fore[h].split('[')[1], 'Esc[' + Back[i].split('[')[1]
     Clear, Reset, Underline = "Esc[K", "Esc[0m", "Esc[4m"
+
 #########################################################
 ##################### importing PYPS ####################
 try:
